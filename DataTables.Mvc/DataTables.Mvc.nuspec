@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>datatables.mvc5</id>
+    <version>0.1.0</version>
+    <title>Datatables.net for MVC5</title>
+    <authors>Stefan Nuxoll, Anderson Luiz Mendes Matos</authors>
+    <licenseUrl>https://github.com/snuxoll/datatables.mvc/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/snuxoll/datatables.mvc</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>datatables.net helpers for ASP.NET MVC5</description>
+    <releaseNotes>Initial release</releaseNotes>
+    <copyright>Copyright 2014 (C) Stefan Nuxoll, Anderson Luiz Mendes Matos</copyright>
+  </metadata>
+</package>

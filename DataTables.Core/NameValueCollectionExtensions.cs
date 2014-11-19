@@ -1,4 +1,4 @@
-﻿#region Copyright
+#region Copyright
 /* The MIT License (MIT)
 
 Copyright (c) 2014 Anderson Luiz Mendes Matos
@@ -22,14 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #endregion Copyright
+
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DataTables.Mvc
+namespace DataTables.Core
 {
     /// <summary>
     /// Provides extension methods for use with NameValueCollections.

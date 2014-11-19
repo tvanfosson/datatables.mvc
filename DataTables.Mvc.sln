@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTables.Mvc", "DataTables.Mvc\DataTables.Mvc.csproj", "{431ADB89-3DA0-4E18-9AF0-984B917E6EB8}"
 EndProject
@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{ADC2DA
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTables.Core", "DataTables.Core\DataTables.Core.csproj", "{918C6293-225D-4789-8124-EBD4DCAB5B97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,6 +24,10 @@ Global
 		{431ADB89-3DA0-4E18-9AF0-984B917E6EB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{431ADB89-3DA0-4E18-9AF0-984B917E6EB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{431ADB89-3DA0-4E18-9AF0-984B917E6EB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{918C6293-225D-4789-8124-EBD4DCAB5B97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{918C6293-225D-4789-8124-EBD4DCAB5B97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{918C6293-225D-4789-8124-EBD4DCAB5B97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{918C6293-225D-4789-8124-EBD4DCAB5B97}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

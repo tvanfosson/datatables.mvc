@@ -22,12 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #endregion Copyright
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace DataTables.Mvc
+namespace DataTables.Core
 {
     /// <summary>
     /// Defines a server-side request for use with DataTables.

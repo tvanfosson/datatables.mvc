@@ -56,7 +56,9 @@
   <ItemGroup>
     <Compile Include="DataTablesWebApiJsonBinder.cs" />
     <Compile Include="DataTablesWebApiBinder.cs" />
+    <Compile Include="ParameterFormats.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueryParameterConstants.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataTables.Core\DataTables.Core.csproj">

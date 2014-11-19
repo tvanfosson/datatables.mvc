@@ -37,40 +37,8 @@ namespace DataTables.WebApi
     /// Defines a DataTables binder to bind a model with the request parameters from DataTables.
     /// </summary>
     public class DataTablesWebApiBinder<T> : IModelBinder
-        where T :  IDataTablesRequest, new()
+        where T : IDataTablesRequest, new()
     {
-        /// <summary>
-        /// Formatting to retrieve data for each column.
-        /// </summary>
-        protected readonly string COLUMN_DATA_FORMATTING = "columns[{0}].data";
-        /// <summary>
-        /// Formatting to retrieve name for each column.
-        /// </summary>
-        protected readonly string COLUMN_NAME_FORMATTING = "columns[{0}].name";
-        /// <summary>
-        /// Formatting to retrieve searchable indicator for each column.
-        /// </summary>
-        protected readonly string COLUMN_SEARCHABLE_FORMATTING = "columns[{0}].searchable";
-        /// <summary>
-        /// Formatting to retrieve orderable indicator for each column.
-        /// </summary>
-        protected readonly string COLUMN_ORDERABLE_FORMATTING = "columns[{0}].orderable";
-        /// <summary>
-        /// Formatting to retrieve search value for each column.
-        /// </summary>
-        protected readonly string COLUMN_SEARCH_VALUE_FORMATTING = "columns[{0}].search.value";
-        /// <summary>
-        /// Formatting to retrieve search regex indicator for each column.
-        /// </summary>
-        protected readonly string COLUMN_SEARCH_REGEX_FORMATTING = "columns[{0}].search.regex";
-        /// <summary>
-        /// Formatting to retrieve ordered columns.
-        /// </summary>
-        protected readonly string ORDER_COLUMN_FORMATTING = "order[{0}].column";
-        /// <summary>
-        /// Formatting to retrieve columns order direction.
-        /// </summary>
-        protected readonly string ORDER_DIRECTION_FORMATTING = "order[{0}].dir";
 
         /// <summary>
         /// Binds a new model with the DataTables request parameters.
@@ -105,6 +73,7 @@ namespace DataTables.WebApi
             {
                 var requestParameters = ResolveNameValueCollection(request);
 
+                var formats = ParameterFormats.GetFormats(request.Method);
 
                 // Populates the model with the draw count from DataTables.
                 model.Draw = Get<int>(requestParameters, "draw");
@@ -114,15 +83,15 @@ namespace DataTables.WebApi
                 model.Length = Get<int>(requestParameters, "length");
 
                 // Populates the model with search (global search).
-                var searchValue = Get<string>(requestParameters, "search.value");
-                var searchRegex = Get<bool>(requestParameters, "search.regex");
+                var searchValue = Get<string>(requestParameters, formats.SearchValue);
+                var searchRegex = Get<bool>(requestParameters, formats.SearchRegex);
                 model.Search = new Search(searchValue, searchRegex);
 
                 // Get's the column collection from the request parameters.
-                var columns = GetColumns(requestParameters);
+                var columns = GetColumns(requestParameters, formats);
 
                 // Parse column ordering.
-                ParseColumnOrdering(requestParameters, columns);
+                ParseColumnOrdering(requestParameters, columns, formats);
 
                 // Attach columns into the model.
                 model.Columns = new ColumnCollection(columns);
@@ -149,7 +118,7 @@ namespace DataTables.WebApi
         /// <param name="requestModel">The request model which will receive your custom data.</param>
         /// <param name="requestParameters">Parameters sent with the request.</param>
         protected virtual void MapAdditionalProperties(IDataTablesRequest requestModel, NameValueCollection requestParameters)
-        {           
+        {
         }
 
         /// <summary>
@@ -202,8 +171,9 @@ namespace DataTables.WebApi
         /// check or change the returned value.
         /// </summary>
         /// <param name="collection">The request value collection.</param>
+        /// <param name="formats">Formatting constants to use for the request type to extract column parameters.</param>
         /// <returns>The collumn collection or an empty list. For default behavior, do not return null!</returns>
-        protected virtual IList<Column> GetColumns(NameValueCollection collection)
+        protected virtual IList<Column> GetColumns(NameValueCollection collection, ParameterFormats formats)
         {
             try
             {
@@ -212,15 +182,16 @@ namespace DataTables.WebApi
                 // Loop through every request parameter to avoid missing any DataTable column.
                 for (int i = 0; i < collection.Count; i++)
                 {
-                    var columnData = Get<string>(collection, String.Format(COLUMN_DATA_FORMATTING, i));
-                    var columnName = Get<string>(collection, String.Format(COLUMN_NAME_FORMATTING, i));
+                    var columnData = Get<string>(collection, string.Format(formats.ColumnDataFormat, i));
+
+                    var columnName = Get<string>(collection, string.Format(formats.ColumnNameFormat, i));
 
                     if (columnData != null && columnName != null)
                     {
-                        var columnSearchable = Get<bool>(collection, String.Format(COLUMN_SEARCHABLE_FORMATTING, i));
-                        var columnOrderable = Get<bool>(collection, String.Format(COLUMN_ORDERABLE_FORMATTING, i));
-                        var columnSearchValue = Get<string>(collection, String.Format(COLUMN_SEARCH_VALUE_FORMATTING, i));
-                        var columnSearchRegex = Get<bool>(collection, String.Format(COLUMN_SEARCH_REGEX_FORMATTING, i));
+                        var columnSearchable = Get<bool>(collection, string.Format(formats.ColumnSearchableFormat, i));
+                        var columnOrderable = Get<bool>(collection, string.Format(formats.ColumnOrderableFormat, i));
+                        var columnSearchValue = Get<string>(collection, string.Format(formats.ColumnSearchValueFormat, i));
+                        var columnSearchRegex = Get<bool>(collection, string.Format(formats.ColumnSearchRegexFormat, i));
 
                         columns.Add(new Column(columnData, columnName, columnSearchable, columnOrderable, columnSearchValue, columnSearchRegex));
                     }
@@ -242,12 +213,13 @@ namespace DataTables.WebApi
         /// </summary>
         /// <param name="collection">The request value collection.</param>
         /// <param name="columns">The column collection as returned from GetColumns method.</param>
-        protected virtual void ParseColumnOrdering(NameValueCollection collection, IList<Column> columns)
+        /// <param name="formats">Formatting strings to use for the request type to extract ordering parameters</param>
+        protected virtual void ParseColumnOrdering(NameValueCollection collection, IList<Column> columns, ParameterFormats formats)
         {
             for (var i = 0; i < collection.Count; i++)
             {
-                var orderColumn = Get<int>(collection, String.Format(ORDER_COLUMN_FORMATTING, i));
-                var orderDirection = Get<string>(collection, String.Format(ORDER_DIRECTION_FORMATTING, i));
+                var orderColumn = Get<int>(collection, String.Format(formats.OrderColumnFormat, i));
+                var orderDirection = Get<string>(collection, String.Format(formats.OrderDirectionFormat, i));
 
                 if (orderColumn > -1 && orderDirection != null)
                 {

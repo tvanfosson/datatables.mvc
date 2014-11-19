@@ -78,6 +78,59 @@ namespace DataTables.WebApi.Test
             }
         }
 
+        [TestMethod]
+        public void When_a_request_with_form_values_is_bound_the_result_is_successful()
+        {
+            var dataRequest = _c.GetValidRequest();
+
+            var binder = _c.GetBinder(dataRequest, false);
+
+            var bindingContext = _c.GetBindingContext();
+
+            var result = binder.BindModel(_c.ActionContext, bindingContext);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void When_a_request_with_form_values_is_bound_the_model_is_populated()
+        {
+            var dataRequest = _c.GetValidRequest();
+
+            var binder = _c.GetBinder(dataRequest, false);
+
+            var bindingContext = _c.GetBindingContext();
+
+            binder.BindModel(_c.ActionContext, bindingContext);
+
+            var boundModel = bindingContext.Model as IDataTablesRequest;
+
+            Assert.IsNotNull(boundModel);
+        }
+
+        [TestMethod]
+        public void When_a_request_with_form_values_is_bound_the_model_has_the_correct_data()
+        {
+            var dataRequest = _c.GetValidRequest();
+
+            var binder = _c.GetBinder(dataRequest, false);
+
+            var bindingContext = _c.GetBindingContext();
+
+            binder.BindModel(_c.ActionContext, bindingContext);
+
+            var boundModel = bindingContext.Model as IDataTablesRequest;
+
+            Assert.AreEqual(dataRequest.Draw, boundModel.Draw);
+            Assert.AreEqual(dataRequest.Start, boundModel.Start);
+            Assert.AreEqual(dataRequest.Length, boundModel.Length);
+            Assert.AreEqual(dataRequest.Search.Value, boundModel.Search.Value);
+            Assert.AreEqual(dataRequest.Search.IsRegexValue, boundModel.Search.IsRegexValue);
+            for (var i = 0; i < dataRequest.Columns.Count(); ++i)
+            {
+                AssertColumnsEqual(dataRequest.Columns.ElementAt(i), boundModel.Columns.ElementAt(i));
+            }
+        }
         private void AssertColumnsEqual(Column expected, Column actual)
         {
             Assert.AreEqual(expected.Data, actual.Data);
@@ -117,11 +170,13 @@ namespace DataTables.WebApi.Test
                     }
 
                     request.RequestUri = new Uri(urlBuilder.ToString().TrimEnd('&'));
+                    request.Method = HttpMethod.Get;
                 }
                 else
                 {
                     request.RequestUri = new Uri(baseUrl);
                     request.Content = new FormUrlEncodedContent(GetContent(data));
+                    request.Method = HttpMethod.Post;
                 }
 
                 var controllerContext = new HttpControllerContext(new HttpConfiguration(), A.Fake<IHttpRouteData>(), request);

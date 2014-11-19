@@ -39,38 +39,7 @@ namespace DataTables.Mvc
     /// </summary>
     public class DataTablesBinder : IModelBinder
     {
-        /// <summary>
-        /// Formatting to retrieve data for each column.
-        /// </summary>
-        protected readonly string COLUMN_DATA_FORMATTING = "columns[{0}][data]";
-        /// <summary>
-        /// Formatting to retrieve name for each column.
-        /// </summary>
-        protected readonly string COLUMN_NAME_FORMATTING = "columns[{0}][name]";
-        /// <summary>
-        /// Formatting to retrieve searchable indicator for each column.
-        /// </summary>
-        protected readonly string COLUMN_SEARCHABLE_FORMATTING = "columns[{0}][searchable]";
-        /// <summary>
-        /// Formatting to retrieve orderable indicator for each column.
-        /// </summary>
-        protected readonly string COLUMN_ORDERABLE_FORMATTING = "columns[{0}][orderable]";
-        /// <summary>
-        /// Formatting to retrieve search value for each column.
-        /// </summary>
-        protected readonly string COLUMN_SEARCH_VALUE_FORMATTING = "columns[{0}][search][value]";
-        /// <summary>
-        /// Formatting to retrieve search regex indicator for each column.
-        /// </summary>
-        protected readonly string COLUMN_SEARCH_REGEX_FORMATTING = "columns[{0}][search][regex]";
-        /// <summary>
-        /// Formatting to retrieve ordered columns.
-        /// </summary>
-        protected readonly string ORDER_COLUMN_FORMATTING = "order[{0}][column]";
-        /// <summary>
-        /// Formatting to retrieve columns order direction.
-        /// </summary>
-        protected readonly string ORDER_DIRECTION_FORMATTING = "order[{0}][dir]";
+
         /// <summary>
         /// Binds a new model with the DataTables request parameters.
         /// You should override this method to provide a custom type for internal binding to procees.
@@ -109,8 +78,8 @@ namespace DataTables.Mvc
             model.Length = Get<int>(requestParameters, "length");
 
             // Populates the model with search (global search).
-            var searchValue = Get<string>(requestParameters, "search[value]");
-            var searchRegex = Get<bool>(requestParameters, "search[regex]");
+            var searchValue = Get<string>(requestParameters, ParameterConstants.SEARCH_VALUE);
+            var searchRegex = Get<bool>(requestParameters, ParameterConstants.SEARCH_REGEX);
             model.Search = new Search(searchValue, searchRegex);
 
             // Get's the column collection from the request parameters.
@@ -178,15 +147,15 @@ namespace DataTables.Mvc
                 // Loop through every request parameter to avoid missing any DataTable column.
                 for (int i = 0; i < collection.Count; i++)
                 {
-                    var columnData = Get<string>(collection, String.Format(COLUMN_DATA_FORMATTING, i));
-                    var columnName = Get<string>(collection, String.Format(COLUMN_NAME_FORMATTING, i));
+                    var columnData = Get<string>(collection, String.Format(ParameterConstants.COLUMN_DATA_FORMATTING, i));
+                    var columnName = Get<string>(collection, String.Format(ParameterConstants.COLUMN_NAME_FORMATTING, i));
 
                     if (columnData != null && columnName != null)
                     {
-                        var columnSearchable = Get<bool>(collection, String.Format(COLUMN_SEARCHABLE_FORMATTING, i));
-                        var columnOrderable = Get<bool>(collection, String.Format(COLUMN_ORDERABLE_FORMATTING, i));
-                        var columnSearchValue = Get<string>(collection, String.Format(COLUMN_SEARCH_VALUE_FORMATTING, i));
-                        var columnSearchRegex = Get<bool>(collection, String.Format(COLUMN_SEARCH_REGEX_FORMATTING, i));
+                        var columnSearchable = Get<bool>(collection, String.Format(ParameterConstants.COLUMN_SEARCHABLE_FORMATTING, i));
+                        var columnOrderable = Get<bool>(collection, String.Format(ParameterConstants.COLUMN_ORDERABLE_FORMATTING, i));
+                        var columnSearchValue = Get<string>(collection, String.Format(ParameterConstants.COLUMN_SEARCH_VALUE_FORMATTING, i));
+                        var columnSearchRegex = Get<bool>(collection, String.Format(ParameterConstants.COLUMN_SEARCH_REGEX_FORMATTING, i));
 
                         columns.Add(new Column(columnData, columnName, columnSearchable, columnOrderable, columnSearchValue, columnSearchRegex));
                     }
@@ -211,8 +180,8 @@ namespace DataTables.Mvc
         {
             for (var i = 0; i < collection.Count; i++)
             {
-                var orderColumn = Get<int>(collection, String.Format(ORDER_COLUMN_FORMATTING, i));
-                var orderDirection = Get<string>(collection, String.Format(ORDER_DIRECTION_FORMATTING, i));
+                var orderColumn = Get<int>(collection, String.Format(ParameterConstants.ORDER_COLUMN_FORMATTING, i));
+                var orderDirection = Get<string>(collection, String.Format(ParameterConstants.ORDER_DIRECTION_FORMATTING, i));
 
                 if (orderColumn > -1 && orderDirection != null)
                 {

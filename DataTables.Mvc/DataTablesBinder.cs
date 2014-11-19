@@ -23,6 +23,7 @@ THE SOFTWARE.
 */
 #endregion Copyright
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -168,7 +169,7 @@ namespace DataTables.Mvc
         /// </summary>
         /// <param name="collection">The request value collection.</param>
         /// <returns>The collumn collection or an empty list. For default behavior, do not return null!</returns>
-        protected virtual List<Column> GetColumns(NameValueCollection collection)
+        protected virtual IList<Column> GetColumns(NameValueCollection collection)
         {
             try
             {
@@ -206,15 +207,17 @@ namespace DataTables.Mvc
         /// </summary>
         /// <param name="collection">The request value collection.</param>
         /// <param name="columns">The column collection as returned from GetColumns method.</param>
-        protected virtual void ParseColumnOrdering(NameValueCollection collection, IEnumerable<Column> columns)
+        protected virtual void ParseColumnOrdering(NameValueCollection collection, IList<Column> columns)
         {
-            for (int i = 0; i < collection.Count; i++)
+            for (var i = 0; i < collection.Count; i++)
             {
                 var orderColumn = Get<int>(collection, String.Format(ORDER_COLUMN_FORMATTING, i));
                 var orderDirection = Get<string>(collection, String.Format(ORDER_DIRECTION_FORMATTING, i));
 
                 if (orderColumn > -1 && orderDirection != null)
-                    columns.ElementAt(orderColumn).SetColumnOrdering(i, orderDirection);
+                {
+                    columns[orderColumn].SetColumnOrdering(i, orderDirection);
+                }
             }
         }
     }

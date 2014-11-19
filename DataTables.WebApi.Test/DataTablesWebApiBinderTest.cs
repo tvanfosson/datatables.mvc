@@ -36,6 +36,22 @@ namespace DataTables.WebApi.Test
             Assert.IsTrue(result);
         }
 
+        [TestMethod]
+        public void When_a_request_with_query_parameters_is_bound_the_model_is_populated()
+        {
+            var dataRequest = _c.GetValidRequest();
+
+            var binder = _c.GetBinder(dataRequest, true);
+
+            var bindingContext = _c.GetBindingContext();
+
+            binder.BindModel(_c.ActionContext, bindingContext);
+
+            var boundModel = bindingContext.Model as IDataTablesRequest;
+
+            Assert.IsNotNull(boundModel);
+        }
+
         [TestInitialize]
         public void Init()
         {

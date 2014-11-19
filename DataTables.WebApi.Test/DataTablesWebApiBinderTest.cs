@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Runtime;
 using System.Security.Policy;
 using System.Text;
 using System.Web;
@@ -50,6 +52,41 @@ namespace DataTables.WebApi.Test
             var boundModel = bindingContext.Model as IDataTablesRequest;
 
             Assert.IsNotNull(boundModel);
+        }
+
+        [TestMethod]
+        public void When_a_request_with_query_parameters_is_bound_the_model_has_the_correct_data()
+        {
+            var dataRequest = _c.GetValidRequest();
+
+            var binder = _c.GetBinder(dataRequest, true);
+
+            var bindingContext = _c.GetBindingContext();
+
+            binder.BindModel(_c.ActionContext, bindingContext);
+
+            var boundModel = bindingContext.Model as IDataTablesRequest;
+
+            Assert.AreEqual(dataRequest.Draw, boundModel.Draw);
+            Assert.AreEqual(dataRequest.Start, boundModel.Start);
+            Assert.AreEqual(dataRequest.Length, boundModel.Length);
+            Assert.AreEqual(dataRequest.Search.Value, boundModel.Search.Value);
+            Assert.AreEqual(dataRequest.Search.IsRegexValue, boundModel.Search.IsRegexValue);
+            for (var i = 0; i < dataRequest.Columns.Count(); ++i)
+            {
+                AssertColumnsEqual(dataRequest.Columns.ElementAt(i), boundModel.Columns.ElementAt(i));
+            }
+        }
+
+        private void AssertColumnsEqual(Column expected, Column actual)
+        {
+            Assert.AreEqual(expected.Data, actual.Data);
+            Assert.AreEqual(expected.Name, actual.Name);
+            Assert.AreEqual(expected.IsOrdered, actual.IsOrdered);
+            Assert.AreEqual(expected.OrderNumber, actual.OrderNumber);
+            Assert.AreEqual(expected.Searchable, actual.Searchable);
+            Assert.AreEqual(expected.Search.Value, actual.Search.Value);
+            Assert.AreEqual(expected.Search.IsRegexValue, actual.Search.IsRegexValue);
         }
 
         [TestInitialize]
